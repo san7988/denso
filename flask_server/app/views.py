@@ -47,12 +47,17 @@ def get_tasks():
 		#match="sanjeev"
 		return jsonify({'result': match})
 
-@app.route('/api/test_tasks', methods=['GET'])
+@app.route('/api/send_data', methods=['GET'])
 def post_tasks():
 	randNum = random.randint(1,101)
 	ts = time.time()
 	dt = datetime.datetime.fromtimestamp(ts).strftime('%H:%M')
 	tasks_tas = {'myData': randNum, 'timeStamp': dt}
 	return jsonify({"tasks": tasks_tas})
+
+@app.route('/api/rcv_instruction', methods=['POST'])
+def receive_instruction():
+	instruction = request.data
+	return jsonify({"retData": instruction})
 
 
