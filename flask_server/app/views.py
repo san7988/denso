@@ -8,6 +8,7 @@ import random
 import datetime
 import time
 import sense
+import pwm
 @app.route('/')
 def index():
 	return render_template("index.html")
@@ -44,8 +45,8 @@ def post_tasks():
 
 @app.route('/api/rcv_instruction', methods=['POST'])
 def receive_instruction():
-	instruction = request.get_json()
-		
-	return jsonify({"retData": instruction.retData})
+	instruction = request.data
+	pwm.control_motor(int(instruction))
+	return jsonify({"retData": instruction}), 201
 
 

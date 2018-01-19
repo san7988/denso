@@ -111,16 +111,27 @@ div.box {
          //   function(data) {
            //         console.log("data returned:"+ data.retData);
              //   });
-        $.ajax({
-                url: "http://localhost:5000/api/rcv_instruction",
-                async: true,
-                data: {"retValue":retValue},
-                type: 'POST',
-                contentType: 'application/json',
-                success: function(data) {
-                    console.log("data returned:"+ data.retData);
-                }            
-            });                    
+        //$.ajax({
+        //        url: "http://localhost:5000/api/rcv_instruction",
+        //        async: true,
+        //        data: {"retValue":retValue},
+        //        type: 'POST',
+        //        contentType: 'application/json',
+        //        success: function(data) {
+        //            console.log("data returned:"+ data.retData);
+        //        }            
+        //    });
+            var request = new XMLHttpRequest();
+            var url = 'http://localhost:5000/api/rcv_instruction';
+            request.open("POST", url, true);
+            request.send(retValue);
+            request.onreadystatechange = function() {
+             if (this.readyState === 4 && this.status === 201) {
+                let response = JSON.parse(this.responseText);
+                console.log("response data :"+response.retData);
+                }
+            }
+                    
         
 	}
 
