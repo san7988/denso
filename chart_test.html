@@ -75,14 +75,53 @@ div.box {
         }, 2000);
 
 	function checkThreshold(){
-		var lastFive = dataQueue.slice(1).slice(-5);
+		var lastThree = dataQueue.slice(1).slice(-2);
 		var sum = 0;
-		for(var i=0; i<5; i++){
-			sum = sum+lastFive[i];
+        var retValue;
+		for(var i=0; i<2; i++){
+			sum = sum+lastThree[i];
 		}
-		if(sum/5>THRESHOLD){
+		if(sum/2> 250){
+            retValue = 4;
+            document.getElementById("warning").style.backgroundColor = 'red';
+            document.getElementById("warning").innerHTML = "Heat Dissipation at Level 4; Applying Max Cooling Effect";
 
 		}
+        else if(sum/2 > 200){
+            retValue = 3;
+            document.getElementById("warning").style.backgroundColor = 'orange';
+            document.getElementById("warning").innerHTML = "Heat Dissipation at Level 3; Applying Coolant";
+        }
+        else if(sum/2 > 150){
+            retValue = 2;
+            document.getElementById("warning").style.backgroundColor = 'aqua';
+            document.getElementById("warning").innerHTML = "Heat Dissipation at Level 2; Applying Coolant";
+        }
+        else if(sum/2 > 120){
+            retValue = 1;
+            document.getElementById("warning").style.backgroundColor = 'yellow';
+            document.getElementById("warning").innerHTML = "Heat Dissipation at Level 1; Applying Coolant";
+        }
+        else{
+            retValue = 0;
+            document.getElementById("warning").style.backgroundColor = 'green';
+            document.getElementById("warning").innerHTML = "Heat Dissipation at Level 0; Normal Functioning";
+        }
+        //$.post("http://localhost:5000/api/rcv_instruction", {"retValue":retValue},
+         //   function(data) {
+           //         console.log("data returned:"+ data.retData);
+             //   });
+        $.ajax({
+                url: "http://localhost:5000/api/rcv_instruction",
+                async: true,
+                data: {"retValue":retValue},
+                type: 'POST',
+                contentType: 'application/json',
+                success: function(data) {
+                    console.log("data returned:"+ data.retData);
+                }            
+            });                    
+        
 	}
 
 	function updateData(){
@@ -98,9 +137,9 @@ div.box {
                 	config.data.datasets[0].data.push(data.tasks.myData);
                 	config.data.labels.push(data.tasks.timeStamp);
                 	dataQueue.push(data.tasks.myData);
-                	if(data.tasks.myData > THRESHOLD){
-                		document.getElementById("warning").innerHTML = "System crossed threshold, being Monitored Closely"
-                	}
+                	//if(data.tasks.myData > THRESHOLD){
+                	//	document.getElementById("warning").innerHTML = "System crossed threshold, being Monitored Closely"
+                	//}
                 	if(dataQueue.length > 50){
                 		var val = dataQueue.shift();
                 		console.log("evicted val :"+val);

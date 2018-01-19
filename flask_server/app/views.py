@@ -33,10 +33,10 @@ tasks = [
 
 @app.route('/api/send_data', methods=['GET'])
 def post_tasks():
-        '''
+	'''
 	sensorData = sense.sen(22)
 	'''
-        sensorData = random.randint(1,101)
+	sensorData = random.randint(80,301)
 	ts = time.time()
 	dt = datetime.datetime.fromtimestamp(ts).strftime('%H:%M')
 	dataToSend = {'myData': sensorData, 'timeStamp': dt}
@@ -44,8 +44,8 @@ def post_tasks():
 
 @app.route('/api/rcv_instruction', methods=['POST'])
 def receive_instruction():
-	instruction = request.data
-        
-	return jsonify({"retData": instruction})
+	instruction = request.get_json()
+		
+	return jsonify({"retData": instruction.retData})
 
 
